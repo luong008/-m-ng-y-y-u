@@ -1,1 +1,165 @@
-# -m-ng-y-y-u
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đếm ngày yêu nhau 💖</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      color: white;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 2s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-top: 30px;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    .counter {
+      font-size: 1.5em;
+      margin-top: 20px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .input-date {
+      margin-top: 30px;
+    }
+
+    input[type="date"] {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1em;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #ff66a3;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: fall 4s linear infinite;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .heart:before,
+    .heart:after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart:before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart:after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-10px) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>💑 Chúng ta đã yêu nhau</h1>
+  <div class="counter" id="timeTogether">0 ngày 00:00:00</div>
+
+  <div class="input-date">
+    <input type="date" id="dateInput">
+    <br>
+    <button onclick="saveDate()">💾 Lưu ngày yêu</button>
+  </div>
+
+  <!-- Nhạc nền -->
+  <audio autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Hiệu ứng tim rơi
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = 2 + Math.random() * 3 + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
+    }
+    setInterval(createHeart, 300);
+
+    // Ảnh nền chuyển đổi
+    const backgrounds = [
+      "https://i.imgur.com/QZ5bGcB.jpg",
+      "https://i.imgur.com/zF0KzZx.jpg",
+      "https://i.imgur.com/wXzj2vA.jpg",
+      "https://i.imgur.com/YbrOlzT.jpg"
+    ];
+    let bgIndex = 0;
+    function changeBackground() {
+      document.body.style.backgroundImage = `url('${backgrounds[bgIndex]}')`;
+      bgIndex = (bgIndex + 1) % backgrounds.length;
+    }
+    setInterval(changeBackground, 5000); // 5 giây đổi ảnh nền
+    changeBackground();
+
+    // Đếm giờ phút giây
+    function updateCounter() {
+      const savedDate = localStorage.getItem("loveDate");
+      if (savedDate) {
+        const now = new Date();
+        const startDate = new Date(savedDate);
+        let diff = Math.floor((now - startDate) / 1000);
+
+        const days = Math.floor(diff / (3600 * 24));
+        diff %= 3600 * 24;
+        const hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+        diff %= 3600;
+        const minutes = String(Math.floor(diff / 60)).padStart(2, '0');
+        const seconds = String(diff % 60).padStart(2, '0');
+
+        document.getElementById("timeTogether").innerText =
+          `${days} ngày ${hours}:${minutes}:${seconds}`;
+
+        document.getElementById("dateInput").value = savedDate;
+      }
+    }
+
+    function saveDate() {
+      const date = document.getElementById("dateInput").value;
+      if (date) {
+        localStorage.setItem("loveDate", date);
+        updateCounter();
+      }
+    }
+
+    setInterval(updateCounter, 1000);
+    updateCounter();
+  </script>
+</body>
+</html>
